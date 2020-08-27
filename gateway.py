@@ -10,7 +10,7 @@ import time
 
 from datetime import datetime
 
-logging.basicConfig(filename='logs\\error_code.log', level=logging.DEBUG)
+logging.basicConfig(filename='logs\\error_code.log', level=logging.INFO)
 
 '''
     đọc dữ liệu từ gateway(Xanh) : sử dụng thư viện minimalmodbus
@@ -26,16 +26,15 @@ class Gateway():
             self.instrument.mode = minimalmodbus.MODE_RTU  # seconds
             self.initialize()
         except:
-            logging.debug('Gateway, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def initialize(self): # khi mình khởi động tắt tất cả thiết bị và cập nhập trạng thái off trên app
         try:
-            # for i in range(27, 31):
-                # self.control_RL(i, 1, 0)
             self.control_RL(23, 1, 0)
+            self.control_RL(24, 1, 0)
             pass
         except:
-            logging.debug('Gateway, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
 
     # convert data to int 16
@@ -48,7 +47,7 @@ class Gateway():
             value = '0x'+value
             return int(value, 16)
         except:
-            logging.debug('Gateway, convert_data : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, convert_data : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     # registeraddress- Search in file Modbus memmap of WR433 V1.9 : C:\Users\Pham Van Phuc\Desktop\SFARM-master
     # get number of node of Wriless 
@@ -59,7 +58,7 @@ class Gateway():
             value = self.convert_data(data)
             return value
         except:
-            logging.debug('Gateway, Get_num_of_node : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_num_of_node : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
 
     # read mosbus adr
@@ -70,7 +69,7 @@ class Gateway():
             value = self.convert_data(data)
             return value
         except:
-            logging.debug('Gateway, Get_modbus_adr : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_modbus_adr : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
 
     # read mosbus baudrate
@@ -81,7 +80,7 @@ class Gateway():
             value = self.convert_data(data)
             return value
         except:
-            logging.debug('Gateway, Get_modbus_baudrate : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_modbus_baudrate : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
 
     # read mosbus parity
@@ -92,7 +91,7 @@ class Gateway():
             value = self.convert_data(data)
             return value
         except:
-            logging.debug('Gateway, Get_modbus_parity  error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_modbus_parity  error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
 # end file - Modbus memmap of WR433 V1.9
 
@@ -116,7 +115,7 @@ class Gateway():
             value = self.convert_data(data)
             return str(value)
         except:
-            logging.debug('Gateway, Get_node_id : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_node_id : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
 
 
@@ -136,7 +135,7 @@ class Gateway():
                 number_of_registers=1, functioncode=3)  
                 return round((data[0]/10), 2)
             except:
-                logging.debug('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                logging.info('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
                 return 0
         elif(id == 2):
             try:
@@ -144,7 +143,7 @@ class Gateway():
                 number_of_registers=2, functioncode=3)
                 return round(data, 2)
             except:
-                logging.debug('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                logging.info('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
                 return 0
         elif(id == 3):
             try:
@@ -152,7 +151,7 @@ class Gateway():
                 number_of_registers=2, functioncode=3)
                 return round(data, 2)
             except:
-                logging.debug('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                logging.info('Gateway, Get_main_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
                 return 0
         else:
             pass
@@ -173,7 +172,7 @@ class Gateway():
             return round(data, 2)
         except:
 
-            logging.debug('Gateway, Get_second_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_second_parameter : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0            
     
     ''' 
@@ -188,7 +187,7 @@ class Gateway():
             data = self.instrument.read_register(41216 + ((pos-1)*256)+ + int((pos-1)/10)*1536)
             return data      
         except:
-            logging.debug('Gateway, Get_battery : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_battery : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
         time.sleep(0.5)
 
@@ -206,7 +205,7 @@ class Gateway():
             data = self.instrument.read_register((41219 + (pos-1)*256))
             return CONSTANT.STATUS_NODE[str(data)]
         except:
-            logging.debug('Gateway, Get_Status_node : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, Get_Status_node : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
         time.sleep(0.5)
 
@@ -220,17 +219,18 @@ class Gateway():
     # 68 : node1,2    69 : node3,4 ...
     def get_RFsignal(self, pos=1, id=1):     # get RF signal            !! OK check xong
         try: 
+            # node chan high byte, node le low byte
             data = self.instrument.read_registers(registeraddress=(67 + math.ceil(pos/2)), number_of_registers=1, functioncode=3)
-            data = hex(data[0]).replace('0x', '')
-            hi_byte = data[0]
-            lo_byte = data[len(data) - 1]
+            
+            low_byte  = data[0] & 255
+            high_byte = (data[0]>>8) & 255
 
-            if ((pos%2) != 0): # 1,3,5,7,9 ... hi_byte
-                return CONSTANT.RSSI[str(hi_byte)]
-            else:
-                return CONSTANT.RSSI[str(lo_byte)]
+            if ((pos%2) != 0): # 1,3,5,7,9(odd) ... high_byte
+                return CONSTANT.RSSI[str(high_byte)]
+            else: # 2, 4, 6, 8...(even)  ... low_byte
+                return CONSTANT.RSSI[str(low_byte)]
         except:
-            logging.debug('Gateway, get_RFsignal : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, get_RFsignal : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
         time.sleep(0.5)
 
@@ -240,7 +240,7 @@ class Gateway():
             data = self.instrument.read_float((41219 + (pos-1)*256 + 1), number_of_registers=2, functioncode=3)
             return round(data, 2)
         except:
-            logging.debug('Gateway, get_Temperature : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, get_Temperature : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
         time.sleep(0.5)
 
@@ -262,7 +262,7 @@ class Gateway():
                                                 number_of_decimals=0, functioncode=16, signed=False)
 
         except:
-            logging.debug('Gateway, control_RL : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, control_RL : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             pass
     
     # get status of relay - phản hồi trạng thái hiện tại của relay
@@ -272,7 +272,7 @@ class Gateway():
                     registeraddress=(2000 + (pos-1)*8 +(chanel-1)), number_of_registers=1, functioncode=3)
             return data[0]
         except:
-            logging.debug('Gateway, get_status_RL : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('Gateway, get_status_RL : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             pass
 
 

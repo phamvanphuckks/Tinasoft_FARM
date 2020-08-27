@@ -1,20 +1,5 @@
 from PyQt5.QtCore import QTimer, QTime, QThread, pyqtSignal, Qt
 
-# flag update sensor
-
-# global arr_node 
-
-# arr_node = [21, 23]
-
-global Flag_Update, Flag_Update_Syn_Data, Flag_Update_Syn_Button, Flag_Update_GUI
-# Khi mà đang đọc cảm biến (Flag_Update = True) thì trên server không bấm nút được và ngược lại
-Flag_Update = False
-# Khi mà đang đồ bộ, thì không insert dữ liệu và ngược lại
-Flag_Update_Syn_Data = False
-# Khi mà đang đồng bộ cũng ko đc ấn nút bấm ở app và trên server
-Flag_Update_Syn_Button = False
-# khi mà có cập data thì mới cập nhập GUI
-Flag_Update_GUI = False
 
 #api
 global auth_token
@@ -23,37 +8,6 @@ global auth_token
 
 global TIME, DEVICE
 
-TIME = {
-    "pump1" : {"second":0, "minute":2},
-    "curtain" : {"second":0, "minute":2}
-} 
-
-global SubThread_pump1, SubThread_curtain1
-
-global Thread_pump1, Thread_curtain1
-
-SubThread_pump1 = QTimer()
-SubThread_curtain1 = QTimer()
-
-Thread_pump1 = QTimer()
-Thread_curtain1 = QTimer()
-
-
-global flag_pump1, flag_curtain1
-
-flag_pump1 = 0
-flag_curtain1 = 0
-
-
-global flag_pump1_N, flag_curtain1_N
-
-flag_pump1_N = 1
-flag_curtain1_N = 1
-#-----------------------------------------------
-
-global en_Relay, en_Sensor
-en_Relay  = False
-en_Sensor = False
 
 global Thread_GUI, Thread_GW,Thread_DB
 Thread_GUI = QTimer()
@@ -62,9 +16,6 @@ Thread_DB  = QTimer()
 #--------------------------------------------------------------------------------------------------
 global flag_backup # co backup
 global flag_backup_N
-
-flag_backup   = 0
-flag_backup_N = 1
 
 global DATA_G00, DATA_G01, DATA_G02
 

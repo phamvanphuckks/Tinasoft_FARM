@@ -7,12 +7,9 @@ import constant  as CONSTANT
 import sys, socket, logging
 from datetime import datetime
 
-logging.basicConfig(filename='logs\\error_code.log',level=logging.DEBUG)
+logging.basicConfig(filename='logs\\error_code.log',level=logging.INFO)
 
 class qt5Class(QtCore.QObject):
-    # The arguments to pyqtSignal define the types of objects that will be emit'd on that signal
-    my_signal = pyqtSignal(int)
-
 
     def __init__(self):
         try:
@@ -20,62 +17,15 @@ class qt5Class(QtCore.QObject):
             self.App = QtWidgets.QApplication([])
             self.app = uic.loadUi("guis\\main.ui")
             self.app.closeEvent = self.closeEvent # khi close, gọi sự kiện closeEvent
-            self.app.label_12.hide()
-            self.LCD_Number()
             self.initialize()
-
-            # self.Update_RF_Relay()
         except:
-            logging.debug('qt5, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))            
+            logging.info('qt5, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))               
 
-    def get_password(self):
-        try: 
-            """Return Google account password."""
-            password, ok = QtWidgets.QInputDialog.getText(
-                self.parent(), "Password", "Password:",
-                QtWidgets.QLineEdit.Password
-            )
-            return password if ok else ''
-        except:
-            logging.debug('qt5, get_password : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-
-    def backup_Synchronous(self, value):
-        try:
-            self.my_signal.connect(self.backup_Synchronous_Slot)
-            self.my_signal.emit(value)
-        except:
-            logging.debug('qt5, backup_Synchronous : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-
-    @QtCore.pyqtSlot(int)
-    def backup_Synchronous_Slot(self, value):
-        try:
-            if(value == 0):
-                self.app.label_12.show()
-                self.app.label_12.setPixmap(QtGui.QPixmap("icons\\backup.png"))
-
-                self.app.label_2.show()
-                self.app.label_2.setText("Backup dữ liệu")   
-                self.app.label_2.setStyleSheet("QLabel {color:rgb(255, 0, 0)}")  
-            elif(value == 1):
-                self.app.label_12.show()
-                self.app.label_12.setPixmap(QtGui.QPixmap("icons\\sync.png"))
-                self.app.label_2.show()
-                self.app.label_2.setText("Đang đồng bộ")
-                self.app.label_2.setStyleSheet("QLabel {color:rgb(0, 170, 0)}") 
-            elif(value == 2):
-                self.app.label_2.hide()
-                self.app.label_12.hide()  
-            else:
-                self.app.label_2.hide()
-                self.app.label_12.hide()   
-        except:
-            logging.debug('qt5, backup_Synchronous_Slot : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))             
-
-    def debugg(self, error, information):
+    def infog(self, error, information):
         try:
             QMessageBox.critical(self.app, error, information)
         except:
-            logging.debug('qt5, debugg : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
+            logging.info('qt5, infog : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
 
     def initialize(self): # khi mình khởi động off hết
         try: 
@@ -85,11 +35,8 @@ class qt5Class(QtCore.QObject):
                 self.display_internet(1)
             else:
                 self.display_internet(0)
-            self.app.label_2.hide()
-            self.app.btn_auto.setStyleSheet("QPushButton {background-color: rgb(229, 229, 229);}")
         except:
-            logging.debug('qt5, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
-
+            logging.info('qt5, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
 
     def closeEvent(self, event: QCloseEvent):
         try:
@@ -102,7 +49,7 @@ class qt5Class(QtCore.QObject):
             else:
                 event.ignore()
         except:
-            logging.debug('qt5, closeEvent : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
+            logging.info('qt5, closeEvent : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
 
     def Update_L(self, data_payload, option, location):
         try:
@@ -137,7 +84,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, Update_L : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_L : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
 # PH
 
@@ -174,7 +121,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, Update_PH : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_PH : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
 # Nhiệt độ
 
@@ -211,7 +158,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, Update_T : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_T : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 # Độ ẩm KK
 
     def Update_H(self, data_payload, option, location):
@@ -247,7 +194,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, Update_H : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_H : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
 # Độ ẩm Đất
 
@@ -501,7 +448,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, Update_SM : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_SM : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
     def Update_RF_Relay(self, data_payload):
         try:
@@ -518,14 +465,11 @@ class qt5Class(QtCore.QObject):
                 self.app.tab2_th1.setStyleSheet(
                             "QLabel {color:rgb(255, 0, 0)}")
             else:
-                pass
-        
+                self.app.tab2_th1.setText("NULL")
+
+            self.app.tab2_th1.setText(str(data_payload["NODE27"]["RF_signal"]))
             if(data_payload["NODE27"]["RF_signal"] == 0):
                 self.app.tab2_th1.setText("NULL")
-            else:
-                self.app.tab2_th1.setText(str(data_payload["NODE27"]["RF_signal"]))
-
-
 
             if(data_payload["NODE28"]["RF_signal"] == "Perfect"):
                 self.app.tab2_th2.setStyleSheet(
@@ -540,17 +484,13 @@ class qt5Class(QtCore.QObject):
                 self.app.tab2_th2.setStyleSheet(
                             "QLabel {color:rgb(255, 0, 0)}")
             else:
-                pass
+                self.app.tab2_th2.setText("NULL")
+
+            self.app.tab2_th2.setText(str(data_payload["NODE28"]["RF_signal"]))
             if(data_payload["NODE28"]["RF_signal"] == 0):
                 self.app.tab2_th2.setText("NULL")
-            else:
-                self.app.tab2_th2.setText(str(data_payload["NODE28"]["RF_signal"]))
-
-            # self.app.tab2_th3.setText("TÍN HIỆU" + str(data_payload["NODE29"]["RF_signal"]))
-            # self.app.tab2_th4.setText("TÍN HIỆU" + str(data_payload["NODE30"]["RF_signal"]))
-            # self.app.tab2_th5.setText("TÍN HIỆU" + str(data_payload["NODE31"]["RF_signal"]))
         except:
-            logging.debug('qt5, Update_RF_Relay : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, Update_RF_Relay : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
     def check_internet(self):
         try:
@@ -565,14 +505,13 @@ class qt5Class(QtCore.QObject):
         try: 
             if (option == 1):
                 self.app.lbl_internet.hide()
-
             else:
                 self.app.lbl_internet.show()
                 self.app.lbl_internet.setStyleSheet(
                     "QLabel {color: red; border-radius: 9px;   border: 2px solid red}")
                 self.app.lbl_internet.setText("KHÔNG CÓ INTERNET")
         except:
-            logging.debug('qt5, display_internet : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))             
+            logging.info('qt5, display_internet : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))             
 
     def chang_status_RL(self, device, status):
         try:
@@ -614,7 +553,7 @@ class qt5Class(QtCore.QObject):
             else:
                 pass
         except:
-            logging.debug('qt5, chang_status_RL : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
+            logging.info('qt5, chang_status_RL : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
     def UpdatePicture(self, device, status): # update picture when press
         try:
@@ -623,15 +562,6 @@ class qt5Class(QtCore.QObject):
                     self.chang_status_RL(1, 1)
                 elif(status == 0):  # relay1 off
                     self.chang_status_RL(1, 0)
-                    # khi mà counter ấn off - dừng luôn
-
-                    if(CONSTANT.SubThread_pump1.isActive()):
-                        CONSTANT.SubThread_pump1.stop() # dừng bơm lại
-                        CONSTANT.flag_pump1   = 0   #trở về trạng thái bắt đầu
-                        CONSTANT.flag_pump1_N = 1
-                        CONSTANT.TIME["pump1"]["minute"] = 2    # cập nhập lại biến time
-                        CONSTANT.TIME["pump1"]["second"] = 0
-                        self.app.lcdNumber.hide() 
                 else:
                     pass
             elif(device == 2):
@@ -639,76 +569,9 @@ class qt5Class(QtCore.QObject):
                     self.chang_status_RL(2, 1)
                 elif(status == 0):
                     self.chang_status_RL(2, 0)
-
-                    if(CONSTANT.SubThread_curtain1.isActive()):
-                        CONSTANT.SubThread_curtain1.stop() # dừng bơm lại
-                        CONSTANT.flag_curtain1 = 0 
-                        CONSTANT.flag_curtain1_N = 1
-                        CONSTANT.TIME["curtain1"]["minute"] = 2    # cập nhập lại biến time
-                        CONSTANT.TIME["curtain1"]["second"] = 0
-                        self.app.lcdNumber_2.hide() 
                 else:
                     pass
             else:
                 pass
         except:
-            logging.debug('qt5, UpdatePicture : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))     
-
-
-    # format 5:00 - time = ("{0}:{1}".format(m,s))
-    def LCD_Number(self):
-        try:
-            self.app.lcdNumber.hide()
-            self.app.lcdNumber_2.hide()
-            self.app.lcdNumber_3.hide()
-            self.app.lcdNumber_4.hide()
-            self.app.lcdNumber_5.hide()
-        except:
-            logging.debug('qt5, LCD_Number : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
-
-    def countdown_pump1(self):
-        try: 
-            if (CONSTANT.TIME["pump1"]["second"] > 0):
-                CONSTANT.TIME["pump1"]["second"] -= 1
-            else:
-                if (CONSTANT.TIME["pump1"]["minute"] > 0):
-                    CONSTANT.TIME["pump1"]["minute"]  -= 1
-                    CONSTANT.TIME["pump1"]["second"] = 59
-                elif((CONSTANT.TIME["pump1"]["minute"] ==0) and (CONSTANT.TIME["pump1"]["second"]==0)):
-                    self.app.lcdNumber.hide() 
-                    CONSTANT.SubThread_pump1.stop() # dừng bơm lại
-                    CONSTANT.flag_pump1 = 0 
-                    CONSTANT.flag_pump1_N = 0
-                    return 
-                else:
-                    pass 
-            time = ("{0}:{1}".format(CONSTANT.TIME["pump1"]["minute"] , CONSTANT.TIME["pump1"]["second"])) 
-
-            self.app.lcdNumber.show()
-            self.app.lcdNumber.setDigitCount(len(time))
-            self.app.lcdNumber.display(time)
-        except:
-            logging.debug('qt5, countdown_pump1 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))            
-
-    def countdown_curtain1(self):
-        try:
-            if CONSTANT.TIME["curtain1"]["second"] > 0:
-                CONSTANT.TIME["curtain1"]["second"]  -=1
-            else:
-                if CONSTANT.TIME["curtain1"]["minute"]  > 0:
-                    CONSTANT.TIME["curtain1"]["minute"] -= 1
-                    CONSTANT.TIME["curtain1"]["second"]  = 59
-                elif((CONSTANT.TIME["curtain1"]["minute"] ==0) and (CONSTANT.TIME["curtain1"]["second"] ==0)):
-                    self.app.lcdNumber_2.hide() 
-                    CONSTANT.SubThread_curtain1.stop() # dừng bơm lại
-                    CONSTANT.flag_curtain1 = 0 
-                    CONSTANT.flag_curtain1_N = 0
-                    return
-                else:
-                    pass 
-            time = ("{0}:{1}".format(CONSTANT.TIME["curtain1"]["minute"] , CONSTANT.TIME["curtain1"]["second"] )) 
-            self.app.lcdNumber_2.show()
-            self.app.lcdNumber_2.setDigitCount(len(time))
-            self.app.lcdNumber_2.display(time)
-        except:
-            logging.debug('qt5, countdown_curtain1 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
+            logging.info('qt5, UpdatePicture : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))     

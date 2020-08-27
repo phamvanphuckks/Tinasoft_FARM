@@ -7,7 +7,7 @@ from datetime  import datetime
 
 lock = Lock()
 
-logging.basicConfig(filename='logs\\error_code.log',level=logging.DEBUG)
+logging.basicConfig(filename='logs\\error_code.log',level=logging.INFO)
 
 class DataBase():
     def __init__(self):
@@ -16,7 +16,7 @@ class DataBase():
             self.con  = sql.connect(self.path, check_same_thread=False)
             self.cur  = self.con.cursor()
         except:
-            logging.debug('db_handler, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))            
+            logging.info('db_handler, __init__ : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))            
 
     def creat_table(self, place):
         try:
@@ -37,7 +37,7 @@ class DataBase():
                 self.cur.execute(cmd)
             lock.release()
         except:
-            logging.debug('db_handler, creat_table : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, creat_table : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def insert_data_nongtraiG00(self, place, syn):
         try:
@@ -72,7 +72,7 @@ class DataBase():
                 )
             lock.release()
         except:
-            logging.debug('db_handler, insert_data_nongtraiG00 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, insert_data_nongtraiG00 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def insert_data_nongtraiG01(self, place, syn):
         try:
@@ -106,7 +106,7 @@ class DataBase():
                 )
             lock.release()
         except:
-            logging.debug('db_handler, insert_data_nongtraiG01 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, insert_data_nongtraiG01 : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def insert_data_Relay(self, place, syn):
         try:
@@ -135,7 +135,7 @@ class DataBase():
                 )
             lock.release()
         except:
-            logging.debug('db_handler, insert_data_Relay : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, insert_data_Relay : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
 
     def insert_data_row(self, place, node, name, id, value,  RF_signal, battery, time, syn):
@@ -161,7 +161,7 @@ class DataBase():
                 self.cur.execute(cmd, (str(node), str(name),str(id), str(value), str(RF_signal), str(battery), str(time),  str(syn)))
             lock.release()
         except:
-            logging.debug('db_handler, insert_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, insert_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def update_data_row(self, table_name, pos, status):
         try:
@@ -172,7 +172,7 @@ class DataBase():
                 self.cur.execute(cmd)
                 lock.release()
         except:
-            logging.debug('db_handler, update_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, update_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def check_syn(self, table_name, stt):
         try:
@@ -189,7 +189,7 @@ class DataBase():
                 else:
                     return False
         except:
-            logging.debug('db_handler, check_syn : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, check_syn : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def remove_data(self, table_name, pos):
         try:
@@ -199,7 +199,7 @@ class DataBase():
                 self.cur.execute(cmd)
                 lock.release()
         except:
-            logging.debug('db_handler, remove_data : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, remove_data : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def find_posMax(self, table_name):
         try:
@@ -214,7 +214,7 @@ class DataBase():
             if (data == []):   return 1
             else:   return   data[0][0]
         except:
-            logging.debug('db_handler, find_posMax : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, find_posMax : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def get_data_row(self, table_name, pos):
         try:
@@ -227,7 +227,7 @@ class DataBase():
             lock.release()
             return data
         except:
-            logging.debug('db_handler, get_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, get_data_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     # Query với n cột trong bảng của ngày hôm đó
     def get_data_n_row(self, table_name, n): # sợ đọc load vào 1 mảng bị tràn mình sẽ chia làm hai sử dụng kiểu ringbuffer - chưa viết đc
@@ -245,7 +245,7 @@ class DataBase():
                 datas.append(data[i])
             return datas
         except:
-            logging.debug('db_handler, get_data_n_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, get_data_n_row : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     # Xóa tất cả các table trong database;
     def get_table_name(self):
@@ -257,7 +257,7 @@ class DataBase():
             lock.release()
             return tables
         except:
-            logging.debug('db_handler, get_table_name : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, get_table_name : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
     def Delete_all_tb(self):
         try:
@@ -274,7 +274,7 @@ class DataBase():
                 self.con.commit()
             lock.release()
         except:
-            logging.debug('db_handler, Delete_all_tb : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+            logging.info('db_handler, Delete_all_tb : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         
 
 
