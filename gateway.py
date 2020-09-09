@@ -32,6 +32,7 @@ class Gateway():
         try:
             self.control_RL(23, 1, 0)
             self.control_RL(24, 1, 0)
+            self.control_RL(24, 2, 0)
             pass
         except:
             logging.info('Gateway, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
@@ -44,7 +45,7 @@ class Gateway():
             for i in range(0, len(data)):
                 value += hex(data[i])
             value = value.replace('0x', '')
-            value = '0x'+value
+            value = '0x' + value
             return int(value, 16)
         except:
             logging.info('Gateway, convert_data : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))

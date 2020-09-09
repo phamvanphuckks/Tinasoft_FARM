@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QTimer, QTime, QThread, pyqtSignal, Qt
 
-
 #api
 global auth_token
 
@@ -8,14 +7,15 @@ global auth_token
 
 global TIME, DEVICE
 
-
 global Thread_GUI, Thread_GW,Thread_DB
 Thread_GUI = QTimer()
 Thread_GW  = QTimer()
 Thread_DB  = QTimer()
+
+global updatePicture_MoRem,updatePicture_KeoRem
+updatePicture_MoRem = QTimer()
+updatePicture_KeoRem = QTimer()
 #--------------------------------------------------------------------------------------------------
-global flag_backup # co backup
-global flag_backup_N
 
 global DATA_G00, DATA_G01, DATA_G02
 
@@ -73,6 +73,7 @@ DATA_RELAY = {
 
 
 global SENSOR, BATTERY, RSSI
+
 SENSOR = {
     "soil_moistrure" : 1,
     "humidity"       : 2,
@@ -86,6 +87,7 @@ BATTERY = {
     '60': "60 %",
     '99': "Full Battery"
 }
+
 RSSI = {
     "4": "Good",
     "3": "Good",
@@ -96,8 +98,8 @@ RSSI = {
 global PH, T, H, SM
 
 L = {
-    'min': 30,
-    'max': 70
+    'min': 2000,
+    'max': 10000
 }
 PH = {
     'min': 4,
@@ -116,25 +118,8 @@ SM = {
     'max': 40
 } 
 
-STATUS_NODE = {
-    "1": "AMBIENT_TEMPERATURE_SENSOR",
-    "2": "ĐỘ ẨM KHÔNG KHÍ",
-    "3": "AMBIENT_DIFERERENTIAL_PRESSURE_SENSOR",
-    "4":  "PROCESS_PRESSURE_SENSOR",
-    "5": "1_CHANEL_AC_5A_CURRENT_SENSOR",
-    "6": "2_CHANEL_DIGITAL_INPUT_WITH_CUONTERS",
-    "7": "2_CHANEL_DIGITAL_INPUT_WITH_STATUS_DETECTING",
-    "8": "2_CHANEL_0-10_VDC_ANALOG_INPUT",
-    "9": "1_CHANEL_0-20_mA_ANALOG_INPUT",
-    "10": "ĐIỀU KHIỂN MÁY BƠM",
-    "11": "ĐỘ ẨM ĐẤT",
-    "12": "SOIL_MOISTURE_SENSOR_WITH_RS485_OUTPUT",
-    "255": "NO_SENSOR"
-}
-
 global GW_Blue_NAME, GW_Red_NAME
 
 # name GW default - tên này có thể thay đổi nếu port thay đổi
 GW_Blue_NAME  = "COM3"        # GateWay(Xanh) : thu dữ liệu của bọn đại việt và điều khiển máy bơm
-GW_Red_NAME   = "COM4"         # GateWay(Đỏ) : thu dữ liệu từ cảm biến của mình
 

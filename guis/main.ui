@@ -150,7 +150,7 @@ QTabBar::tab:selected {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="usesScrollButtons">
      <bool>true</bool>
@@ -3627,9 +3627,9 @@ background-color: rgb(255, 255, 255);</string>
      <widget class="QLabel" name="label_8">
       <property name="geometry">
        <rect>
-        <x>270</x>
+        <x>260</x>
         <y>100</y>
-        <width>201</width>
+        <width>221</width>
         <height>391</height>
        </rect>
       </property>
@@ -3802,7 +3802,7 @@ color: rgb(0, 0, 0);</string>
        <rect>
         <x>290</x>
         <y>260</y>
-        <width>161</width>
+        <width>171</width>
         <height>161</height>
        </rect>
       </property>
@@ -3837,27 +3837,23 @@ border: 2px solid blue</string>
      <widget class="QPushButton" name="tab2_btn_r2off">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>380</x>
         <y>440</y>
-        <width>71</width>
+        <width>91</width>
         <height>41</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 0, 0);
-color: rgb(255, 255, 255);</string>
+       <string notr="true">background-color: rgb(229, 229, 229);
+color: rgb(0, 0, 0);</string>
       </property>
       <property name="text">
-       <string>Tắt</string>
+       <string>Mở rèm</string>
       </property>
       <property name="iconSize">
        <size>
@@ -3869,16 +3865,15 @@ color: rgb(255, 255, 255);</string>
      <widget class="QPushButton" name="tab2_btn_r2on">
       <property name="geometry">
        <rect>
-        <x>380</x>
+        <x>280</x>
         <y>440</y>
-        <width>71</width>
+        <width>91</width>
         <height>41</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>Courier New</family>
-        <pointsize>14</pointsize>
+        <pointsize>12</pointsize>
         <weight>50</weight>
         <italic>false</italic>
         <bold>false</bold>
@@ -3886,16 +3881,11 @@ color: rgb(255, 255, 255);</string>
       </property>
       <property name="styleSheet">
        <string notr="true">background-color: rgb(229, 229, 229);
-color: rgb(0, 0, 0);</string>
+color: rgb(0, 0, 0);
+</string>
       </property>
       <property name="text">
-       <string>BẬT</string>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
+       <string>Kéo rèm</string>
       </property>
      </widget>
      <widget class="QPushButton" name="tab2_btn_r3off">
@@ -4800,7 +4790,7 @@ background-color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>480</x>
       <y>10</y>
       <width>331</width>
       <height>51</height>

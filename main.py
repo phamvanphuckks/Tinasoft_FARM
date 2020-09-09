@@ -28,7 +28,7 @@ DB       = SQLite.DataBase()
 ---------------------------------------------------------------------------------------------------------------------------
 '''
 
-logging.basicConfig(filename='logs\\error_code.log',level=logging.INFO)
+logging.basicConfig(filename='logs\\error_code.log', level=logging.INFO)
 
 #--define MQTT--------------------------------------
 MQTT_HOST = 'smartfarm.tinasoft.com.vn'
@@ -82,14 +82,20 @@ def ControlDevice(device, status): # kiêu kiểu thế này
             else:
                 pass
         elif(device == 2): # curtain1
-            if(status == 1):
-                GW_Blue.control_RL(24, 1, 1) # GateWay(Xanh) điểu khiển Relay 
-                if(get_status(28) == "1"):
-                    Windowns.UpdatePicture(device, status) # thay đổi trên app
-            elif(status == 0):
-                GW_Blue.control_RL(24, 1, 0)
-                if(get_status(28) == "0"):
-                    Windowns.UpdatePicture(device, status)
+            if(status == 1): # relay2-channel1 - KeoRem
+                GW_Blue.control_RL(24, 1, 1) 
+                thread_KeoRem.start()
+                if(get_status(28, 1) == "1"):
+                    Windowns.UpdatePicture(device, status, 1) # thay đổi trên app
+                time.sleep(5)
+                GW_Blue.control_RL(24, 1, 0)           
+            elif(status == 0): # relay2-channel2 - MoRem
+                GW_Blue.control_RL(24, 2, 1)
+                thread_MoRem.start()
+                if(get_status(28, 2) == "1"):
+                    Windowns.UpdatePicture(device, 1, 2)
+                time.sleep(5)
+                GW_Blue.control_RL(24, 2, 0) 
             else:
                 pass
         else:
@@ -138,7 +144,7 @@ def get_status_all(): # lấy trạng thái hiện tại của thiet bi
 '''
     + lấy trạng thái của từng relay
 '''
-def get_status(pos): 
+def get_status(pos, channel=1): 
     try:
         global client, GW_Blue
         # 1 nong trai se co 2 relay Relay_1 va relay_2
@@ -158,11 +164,23 @@ def get_status(pos):
                 }
             }
         elif(pos == 28):
-            CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]     = str(GW_Blue.get_status_RL(24, 1))
+            CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]     = str(GW_Blue.get_status_RL(24, channel))
             CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"] = GW_Blue.get_RFsignal(24, CONSTANT.SENSOR["relay"])
             CONSTANT.DATA_RELAY["NODE" + str(pos)]["id"]        = GW_Blue.get_node_id(24, CONSTANT.SENSOR["relay"])
             Windowns.Update_RF_Relay(CONSTANT.DATA_RELAY)
 
+            # if((channel == 1) and (CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]=="1") ):
+            #     payload_data = {
+            #         'sub_id': "G00",
+            #         'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            #         'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            #         "relay_2": {
+            #             "RF_signal": CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"],
+            #             'value':    "0",
+            #             'battery': 100
+            #         }
+            #     }
+            # else:
             payload_data = {
                 'sub_id': "G00",
                 'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -172,7 +190,7 @@ def get_status(pos):
                     'value':    str(CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]),
                     'battery': 100
                 }
-            }
+            }                
         else:
             pass
 
@@ -209,6 +227,7 @@ def on_connect(client, userdata, flags, rc):    # subscrie on  topic
 def on_message(client, userdata, msg):  # received data - chua code xong
     # print(msg.topic+" "+str(msg.payload))
     try:
+        # (2,1) relay2-channel1 - (2, 0) relay2-channel2
         data = json.loads(msg.payload.decode('utf-8'))
         if(data['sub_id'] == "G00"):
             if ("relay_1" in data): 
@@ -220,9 +239,9 @@ def on_message(client, userdata, msg):  # received data - chua code xong
                     ControlDevice(1, 0)
             if ("relay_2" in data):
                 if (data['relay_2']['value'] == '1'):
-                    ControlDevice(2, 1)
-                if (data['relay_2']['value'] == '0'):
                     ControlDevice(2, 0)
+                if (data['relay_2']['value'] == '0'):
+                    ControlDevice(2, 1)
 
         if(data['sub_id'] == "G01"):
             if ("relay_1" in data): 
@@ -244,6 +263,7 @@ def Init_Button():
         Windowns.app.tab2_btn_r1off.clicked.connect(lambda:ControlDevice(1, 0))
         Windowns.app.tab2_btn_r1on.clicked.connect(lambda:ControlDevice(1, 1))
 
+        # off : keo ra, on keo ve
         Windowns.app.tab2_btn_r2off.clicked.connect(lambda:ControlDevice(2, 0))
         Windowns.app.tab2_btn_r2on.clicked.connect(lambda:ControlDevice(2, 1))
 
@@ -252,7 +272,7 @@ def Init_Button():
 
 #---end ----------------------------------------------------------------------------------------------------------
 
-#--- Update Data--------------------------------------------------------------------------------------------------
+#--- Update Data------------------------------------------------------------------------------------------------------------
 def Init_UI(): # khởi tạo GateWay_Xanh
     global GW_Blue
 
@@ -297,7 +317,7 @@ def requirePort(): # Xac dinh COM
     except:
         logging.info('requirePort error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))   
 
-#---end-----------------------------------------------------------------------------------------------------------
+#---end----------------------------------------------------------------------------------------------------------------------
 
 
 def Thread_GatewayBlue():
@@ -399,6 +419,14 @@ def Thread_UpdateGUI_QT():
     except:
         logging.info('Thread_UpdateGUI_QT error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
   
+def UpdateGUI_MoRem():
+    global Windowns
+    Windowns.UpdatePicture(2, 0)
+
+def UpdateGUI_KeoRem():
+    global Windowns
+    Windowns.UpdatePicture(2, 0)
+
 
 class YouThread(QtCore.QThread): # inheritance
     global client
@@ -422,6 +450,34 @@ class YouThread(QtCore.QThread): # inheritance
 thread = YouThread() 
 thread.start()
 
+class Thread_UpdateGUI_MoRem(QtCore.QThread): # inheritance
+    global client
+
+    def __init__(self, parent=None):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self): 
+        time.sleep(58) 
+        UpdateGUI_MoRem()
+        get_status(28, 2)
+
+thread_MoRem = Thread_UpdateGUI_MoRem() 
+
+class Thread_UpdateGUI_KeoRem(QtCore.QThread): # inheritance
+    global client
+
+    def __init__(self, parent=None):
+        QtCore.QThread.__init__(self, parent)
+
+    def run(self): 
+        time.sleep(58) 
+        UpdateGUI_MoRem()
+        get_status(28, 1)
+
+
+thread_KeoRem = Thread_UpdateGUI_KeoRem() 
+
+
 def Init_Thread():
     try:
         #---data---------------------------------------------------------------------------------------------
@@ -431,12 +487,13 @@ def Init_Thread():
         # muốn đồng bộ nhanh - 2  thread  phải lệch khe thời gian
         CONSTANT.Thread_GUI.timeout.connect(Thread_UpdateGUI_QT)
         CONSTANT.Thread_GUI.start(125000)
+
  
         #-----------------------------------------------------------------------------------------------------   
     except:
         logging.info('Init_Thread error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
-#---end------------------------------------------------------------------------------------------------
+#---end--------------------------------------------------------------------------------------------------------------------------
 
 
 def Init_api():
