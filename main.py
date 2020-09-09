@@ -384,6 +384,39 @@ def Thread_GatewayBlue():
                 DB.insert_data_nongtraiG00("nongtrai_G00", "error") 
             except:
                 logging.info('Thread_GatewayBlue: Loi publish data G00, G01  - khong co Internet : ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+
+        # auto pump
+        if((CONSTANT.DATA_G00["NODE1"]["value"] <= CONSTANT.SM["min"]) or 
+        (CONSTANT.DATA_G00["NODE2"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE3"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE4"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE5"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE6"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE7"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE8"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE9"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G00["NODE10"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE11"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE12"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE13"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE14"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE15"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE16"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE17"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE18"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE19"]["value"] <= CONSTANT.SM["min"]) or
+        (CONSTANT.DATA_G01["NODE20"]["value"] <= CONSTANT.SM["min"])):
+            ControlDevice(1, 1)
+        else:
+            ControlDevice(1, 0)
+
+        # auto pump
+        if(CONSTANT.DATA_G00["NODE23"]["value"] >= CONSTANT.L["max"]): # keo rem close
+            ControlDevice(2, 1)
+        else: # mo rem open
+            ControlDevice(2, 0)
+
     except:
         logging.info('Thread_GatewayBlue error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))   
 
@@ -524,6 +557,7 @@ def Init_api():
         CONSTANT.T['min'] = response_get[0]["stage"]["min_temp"]
         CONSTANT.T['max'] = response_get[0]["stage"]["max_temp"]
         CONSTANT.H['min'] = response_get[0]["stage"]["min_hum"]
+        CONSTANT.H['max'] = response_get[0]["stage"]["max_hum"]
         CONSTANT.SM['min'] = response_get[0]["stage"]["min_soil_moisture"]
         CONSTANT.SM['max'] = response_get[0]["stage"]["max_soil_moisture"]
 
