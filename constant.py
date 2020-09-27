@@ -1,20 +1,14 @@
-from PyQt5.QtCore import QTimer, QTime, QThread, pyqtSignal, Qt
+from PyQt5.QtCore import QTimer, QTime, QThread, Qt
 
 #api
 global auth_token
 
-# countdown
-
-global TIME, DEVICE
-
-global Thread_GUI, Thread_GW,Thread_DB
+# thread 
+global Thread_GUI, Thread_GW, Thread_DB
 Thread_GUI = QTimer()
 Thread_GW  = QTimer()
 Thread_DB  = QTimer()
 
-global updatePicture_MoRem,updatePicture_KeoRem
-updatePicture_MoRem = QTimer()
-updatePicture_KeoRem = QTimer()
 #--------------------------------------------------------------------------------------------------
 
 global DATA_G00, DATA_G01, DATA_G02
@@ -36,8 +30,7 @@ DATA_G00 = {
 
     "NODE21": {"node": 21,"name": "humidity1",         "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
     "NODE23": {"node": 23,"name": "light1",            "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE25": {"node": 25,"name": "temperature1",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE32": {"node": 32,"name": "ph1",               "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
+    "NODE25": {"node": 25,"name": "temperature1",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
 }
 
 DATA_G01 = {
@@ -56,8 +49,7 @@ DATA_G01 = {
 
     "NODE22": {"node": 22,"name": "humidity2",         "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
     "NODE24": {"node": 24,"name": "light2",            "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE26": {"node": 26,"name": "temperature2",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE33": {"node": 33,"name": "ph2",               "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
+    "NODE26": {"node": 26,"name": "temperature2",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
 }
 
 
@@ -71,8 +63,9 @@ DATA_RELAY = {
     "NODE31": {"node": 31,"name": "relay5", "id":0,  "value" : 0, "battery": 100, "RF_signal":"NULL", "time":"", "syn":"error"}
 }
 
+#------------------------------------------------------------------------------------------------------------------------------------
 
-global SENSOR, BATTERY, RSSI
+global SENSOR, RSSI
 
 SENSOR = {
     "soil_moistrure" : 1,
@@ -81,30 +74,21 @@ SENSOR = {
     "relay"          : 4
 }
 
-BATTERY = {
-    '10': "10 %",
-    '30': "30 %",
-    '60': "60 %",
-    '99': "Full Battery"
-}
-
 RSSI = {
     "4": "Good",
     "3": "Good",
     "2": "Medium",
-    "1": "Bad"
+    "1": "Bad",
+    "0": "NULL"
 }
 
-global PH, T, H, SM
+global T, H, SM
 
 L = {
     'min': 2000,
     'max': 10000
 }
-PH = {
-    'min': 4,
-    'max': 7
-}
+
 T = {
     'min': 20,
     'max': 30
@@ -113,12 +97,17 @@ H = {
     'min': 75,
     'max': 80
 }
+
 SM = {
-    'min': 30,
-    'max': 40
+    'min': 12,
+    'max': 17
 } 
 
-global GW_Blue_NAME, GW_Red_NAME
+global flag_pump, flag_curtain
+flag_pump = 0
+flag_curtain = 0
+
+global GW_Blue_NAME
 
 # name GW default - tên này có thể thay đổi nếu port thay đổi
 GW_Blue_NAME  = "COM3"        # GateWay(Xanh) : thu dữ liệu của bọn đại việt và điều khiển máy bơm

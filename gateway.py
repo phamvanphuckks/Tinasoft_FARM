@@ -156,7 +156,7 @@ class Gateway():
                 return 0
         else:
             pass
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
 # address in file memap of WS433-RL - C:\Users\Pham Van Phuc\Desktop\SFARM-master
@@ -190,7 +190,7 @@ class Gateway():
         except:
             logging.info('Gateway, Get_battery : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
 
@@ -208,7 +208,7 @@ class Gateway():
         except:
             logging.info('Gateway, Get_Status_node : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
-        time.sleep(0.5)
+        time.sleep(0.1)
 
     ''' 
         ID  : Kinds of sensors
@@ -233,7 +233,7 @@ class Gateway():
         except:
             logging.info('Gateway, get_RFsignal : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 
     def get_Temperature(self, pos=1, id=1):
@@ -243,7 +243,7 @@ class Gateway():
         except:
             logging.info('Gateway, get_Temperature : ' + str(pos) + ' error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
             return 0
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 #-----------------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -32,6 +32,7 @@ class Gateway():
         try:
             self.control_RL(23, 1, 0)
             self.control_RL(24, 1, 0)
+            self.control_RL(24, 2, 0)
             pass
         except:
             logging.info('Gateway, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))

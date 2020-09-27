@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QVBoxLayout, QAction, QGroupBox, QTableWidget, QTableWidgetItem, QWidget, QMessageBox
-from PyQt5.QtCore    import QTimer, QTime, QThread, pyqtSignal
+from PyQt5.QtWidgets import QAction, QTabWidget, QWidget, QMessageBox
+from PyQt5.QtCore    import QTimer, QTime, QThread
 from PyQt5           import QtCore, QtGui
 from datetime        import datetime   # date_time
 
@@ -84,17 +84,15 @@ def ControlDevice(device, status): # kiêu kiểu thế này
         elif(device == 2): # curtain1
             if(status == 1): # relay2-channel1 - KeoRem
                 GW_Blue.control_RL(24, 1, 1) 
-                thread_KeoRem.start()
                 if(get_status(28, 1) == "1"):
-                    Windowns.UpdatePicture(device, status, 1) # thay đổi trên app
-                time.sleep(5)
-                GW_Blue.control_RL(24, 1, 0)           
+                    Windowns.UpdatePicture(device, not(status), 1) # thay đổi trên app
+                time.sleep(3)
+                GW_Blue.control_RL(24, 1, 0)      
             elif(status == 0): # relay2-channel2 - MoRem
                 GW_Blue.control_RL(24, 2, 1)
-                thread_MoRem.start()
                 if(get_status(28, 2) == "1"):
-                    Windowns.UpdatePicture(device, 1, 2)
-                time.sleep(5)
+                    Windowns.UpdatePicture(device, not(status), 2)# thay đổi trên app
+                time.sleep(3)
                 GW_Blue.control_RL(24, 2, 0) 
             else:
                 pass
@@ -106,6 +104,7 @@ def ControlDevice(device, status): # kiêu kiểu thế này
 '''
     + lấy trạng thái của tất cả thiết bị relay
     + Init_mqtt() gọi function này : cập nhập lại button khi mất mạng và khi khởi động hệ thống
+    + xem lai ham nay
 '''
 def get_status_all(): # lấy trạng thái hiện tại của thiet bi
     global client, GW_Blue
@@ -120,7 +119,6 @@ def get_status_all(): # lấy trạng thái hiện tại của thiet bi
                 'value'    : str(GW_Blue.get_status_RL(23, 1)),
                 'battery'  : 100,
             },
-
             "relay_2": {
                 "RF_signal": GW_Blue.get_RFsignal(24),
                 'value'    : str(GW_Blue.get_status_RL(24, 1)),
@@ -143,6 +141,8 @@ def get_status_all(): # lấy trạng thái hiện tại của thiet bi
 
 '''
     + lấy trạng thái của từng relay
+    Can xem lai
+    +
 '''
 def get_status(pos, channel=1): 
     try:
@@ -168,28 +168,27 @@ def get_status(pos, channel=1):
             CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"] = GW_Blue.get_RFsignal(24, CONSTANT.SENSOR["relay"])
             CONSTANT.DATA_RELAY["NODE" + str(pos)]["id"]        = GW_Blue.get_node_id(24, CONSTANT.SENSOR["relay"])
             Windowns.Update_RF_Relay(CONSTANT.DATA_RELAY)
-
-            # if((channel == 1) and (CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]=="1") ):
-            #     payload_data = {
-            #         'sub_id': "G00",
-            #         'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            #         'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            #         "relay_2": {
-            #             "RF_signal": CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"],
-            #             'value':    "0",
-            #             'battery': 100
-            #         }
-            #     }
-            # else:
-            payload_data = {
-                'sub_id': "G00",
-                'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "relay_2": {
-                    "RF_signal": CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"],
-                    'value':    str(CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]),
-                    'battery': 100
+            if((channel == 1) and (CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]=="1") ): #keo rem
+                payload_data = {
+                    'sub_id': "G00",
+                    'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "relay_2": {
+                        "RF_signal": CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"],
+                        'value':    '0',
+                        'battery': 100
+                    }
                 }
+            elif((channel == 2) and (CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"]=="1")): #mo rem
+                payload_data = {
+                    'sub_id': "G00",
+                    'date_sync'  : datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'time': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "relay_2": {
+                        "RF_signal": CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"],
+                        'value':  '1',
+                        'battery': 100
+                    }
             }                
         else:
             pass
@@ -205,7 +204,6 @@ def get_status(pos, channel=1):
                 # print(json.dumps(payload_data))
             except:
                 logging.info('Loi publish get_status - mqtt error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))        
-
         else:
             DB.insert_data_row("controller", pos, CONSTANT.DATA_RELAY["NODE" + str(pos)]["name"],CONSTANT.DATA_RELAY["NODE" + str(pos)]["id"],
             CONSTANT.DATA_RELAY["NODE" + str(pos)]["value"], CONSTANT.DATA_RELAY["NODE" + str(pos)]["RF_signal"], 100, 
@@ -263,7 +261,7 @@ def Init_Button():
         Windowns.app.tab2_btn_r1off.clicked.connect(lambda:ControlDevice(1, 0))
         Windowns.app.tab2_btn_r1on.clicked.connect(lambda:ControlDevice(1, 1))
 
-        # off : keo ra, on keo ve
+        # off : mo ra, on : keo ve
         Windowns.app.tab2_btn_r2off.clicked.connect(lambda:ControlDevice(2, 0))
         Windowns.app.tab2_btn_r2on.clicked.connect(lambda:ControlDevice(2, 1))
 
@@ -385,37 +383,50 @@ def Thread_GatewayBlue():
             except:
                 logging.info('Thread_GatewayBlue: Loi publish data G00, G01  - khong co Internet : ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
-
         # auto pump
-        if((CONSTANT.DATA_G00["NODE1"]["value"] <= CONSTANT.SM["min"]) or 
-        (CONSTANT.DATA_G00["NODE2"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE3"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE4"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE5"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE6"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE7"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE8"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE9"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G00["NODE10"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE11"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE12"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE13"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE14"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE15"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE16"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE17"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE18"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE19"]["value"] <= CONSTANT.SM["min"]) or
-        (CONSTANT.DATA_G01["NODE20"]["value"] <= CONSTANT.SM["min"])):
-            ControlDevice(1, 1)
+        if(
+        ((float(CONSTANT.DATA_G00["NODE1"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE1"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE2"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE2"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE3"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE3"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE4"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE4"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE5"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE5"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE6"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE6"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE7"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE7"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE8"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE8"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE9"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE9"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE10"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE10"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE11"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE11"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE12"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE12"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE13"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE13"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE14"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE14"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE15"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE15"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE16"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE16"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE17"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE17"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE18"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE18"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE19"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE19"]["RF_signal"] != "NULL"))or 
+        ((float(CONSTANT.DATA_G00["NODE20"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE20"]["RF_signal"] != "NULL"))):
+            # ON
+            if(CONSTANT.flag_pump < 1):
+                ControlDevice(1, 1)
+                CONSTANT.flag_pump += 1
         else:
-            ControlDevice(1, 0)
+            # OFF
+            if(CONSTANT.flag_pump >= 1):
+                ControlDevice(1, 0)
+                CONSTANT.flag_pump = 0
 
-        # auto pump
-        if(CONSTANT.DATA_G00["NODE23"]["value"] >= CONSTANT.L["max"]): # keo rem close
-            ControlDevice(2, 1)
-        else: # mo rem open
-            ControlDevice(2, 0)
+        # auto curtains
+       
+        if((float(CONSTANT.DATA_G00["NODE23"]["value"]) >= float(CONSTANT.L["max"])) and (CONSTANT.DATA_G00["NODE23"]["RF_signal"] != "NULL")): # keo rem close
+            # keo rem - OFF
+            if(CONSTANT.flag_curtain < 1):
+                ControlDevice(2, 1)
+                CONSTANT.flag_curtain += 1
+        else: 
+            # mo rem - ON
+            if(CONSTANT.flag_curtain >= 1):
+                ControlDevice(2, 0)
+                CONSTANT.flag_curtain =0
 
     except:
         logging.info('Thread_GatewayBlue error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))   
@@ -452,14 +463,6 @@ def Thread_UpdateGUI_QT():
     except:
         logging.info('Thread_UpdateGUI_QT error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
   
-def UpdateGUI_MoRem():
-    global Windowns
-    Windowns.UpdatePicture(2, 0)
-
-def UpdateGUI_KeoRem():
-    global Windowns
-    Windowns.UpdatePicture(2, 0)
-
 
 class YouThread(QtCore.QThread): # inheritance
     global client
@@ -482,34 +485,6 @@ class YouThread(QtCore.QThread): # inheritance
 
 thread = YouThread() 
 thread.start()
-
-class Thread_UpdateGUI_MoRem(QtCore.QThread): # inheritance
-    global client
-
-    def __init__(self, parent=None):
-        QtCore.QThread.__init__(self, parent)
-
-    def run(self): 
-        time.sleep(58) 
-        UpdateGUI_MoRem()
-        get_status(28, 2)
-
-thread_MoRem = Thread_UpdateGUI_MoRem() 
-
-class Thread_UpdateGUI_KeoRem(QtCore.QThread): # inheritance
-    global client
-
-    def __init__(self, parent=None):
-        QtCore.QThread.__init__(self, parent)
-
-    def run(self): 
-        time.sleep(58) 
-        UpdateGUI_MoRem()
-        get_status(28, 1)
-
-
-thread_KeoRem = Thread_UpdateGUI_KeoRem() 
-
 
 def Init_Thread():
     try:
@@ -552,8 +527,6 @@ def Init_api():
         # G00
         CONSTANT.L['min'] = response_get[0]["stage"]["min_light"]
         CONSTANT.L['max'] = response_get[0]["stage"]["max_light"]
-        CONSTANT.PH['min'] = response_get[0]["stage"]["min_PH"]
-        CONSTANT.PH['max'] = response_get[0]["stage"]["max_PH"]
         CONSTANT.T['min'] = response_get[0]["stage"]["min_temp"]
         CONSTANT.T['max'] = response_get[0]["stage"]["max_temp"]
         CONSTANT.H['min'] = response_get[0]["stage"]["min_hum"]
@@ -571,8 +544,6 @@ def Init_api():
         Windowns.app.tab1_H_min.setText(str(CONSTANT.H['min']))
         Windowns.app.tab1_H_max.setText(str(CONSTANT.H['max']))
 
-        Windowns.app.tab1_PH_min.setText(str(CONSTANT.PH['min']))
-        Windowns.app.tab1_PH_max.setText(str(CONSTANT.PH['max']))
 
         if(response_get[0]["stage"]["name"]=="germination stage"):
             Windowns.app.tab1_stage.setText("Cây con")
@@ -616,6 +587,9 @@ if __name__ == "__main__":
     Init_Button()
     Init_mqtt()
     Init_Thread()
+    Thread_GatewayBlue()
+    Thread_UpdateGUI_QT() 
+
 
     Windowns.app.show()
     sys.exit(Windowns.App.exec())

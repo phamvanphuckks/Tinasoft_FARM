@@ -1,7 +1,7 @@
 from PyQt5           import QtWidgets, uic, QtGui, QtCore
-from PyQt5.QtWidgets import QInputDialog, QAction, QGroupBox, QTableWidget, QTableWidgetItem, QWidget, QMessageBox
-from PyQt5.QtCore    import QTimer, QTime, QThread, pyqtSignal, Qt, QObject
-from PyQt5.QtGui     import QPixmap, QCloseEvent, QColor
+from PyQt5.QtWidgets import QAction, QTabWidget, QWidget, QMessageBox
+from PyQt5.QtCore    import QTimer, QTime, QThread, Qt, QObject
+from PyQt5.QtGui     import QCloseEvent, QColor
 
 import constant  as CONSTANT
 import sys, socket, logging
@@ -85,43 +85,6 @@ class qt5Class(QtCore.QObject):
                 pass
         except:
             logging.info('qt5, Update_L : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
-
-# PH
-
-    def Update_PH(self, data_payload, option, location):
-        try:
-            if(location == "G00"):
-                if (option == 1):
-                    if (float(data_payload['NODE32']['value']) <= CONSTANT.PH['min']):
-                        self.app.tab1_ph1.setStyleSheet(
-                            "QLabel {color:rgb(0, 0, 255);background-color: rgb(255, 255, 255)}")
-                    elif (float(data_payload['NODE32']['value']) >= CONSTANT.PH['max']):
-                        self.app.tab1_ph1.setStyleSheet(
-                            "QLabel {color:rgb(255, 0, 0);background-color: rgb(255, 255, 255)}")
-                    else:
-                        self.app.tab1_ph1.setStyleSheet(
-                            "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
-                    self.app.tab1_ph1.setText(str(data_payload['NODE32']['value']))
-                else:
-                    pass
-            elif(location == "G01"):
-                if(option == 2):
-                    if (float(data_payload['NODE33']['value']) <= CONSTANT.PH['min']):
-                        self.app.tab1_ph2.setStyleSheet(
-                            "QLabel {color:rgb(0, 0, 255);background-color: rgb(255, 255, 255)}")
-                    elif (float(data_payload['NODE33']['value']) >= CONSTANT.PH['max']):
-                        self.app.tab1_ph2.setStyleSheet(
-                            "QLabel {color:rgb(255, 0, 0);background-color: rgb(255, 255, 255)}")
-                    else:
-                        self.app.tab1_ph2.setStyleSheet(
-                            "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
-                    self.app.tab1_ph2.setText(str(data_payload['NODE33']['value']))
-                else:
-                    pass
-            else:
-                pass
-        except:
-            logging.info('qt5, Update_PH : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
 # Nhiệt độ
 

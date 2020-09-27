@@ -11,6 +11,10 @@ global Thread_GUI, Thread_GW,Thread_DB
 Thread_GUI = QTimer()
 Thread_GW  = QTimer()
 Thread_DB  = QTimer()
+
+global updatePicture_MoRem,updatePicture_KeoRem
+updatePicture_MoRem = QTimer()
+updatePicture_KeoRem = QTimer()
 #--------------------------------------------------------------------------------------------------
 
 global DATA_G00, DATA_G01, DATA_G02
