@@ -1,2 +1,7 @@
-
-(1<15)  or 
+    Init_api()
+    requirePort()
+    Init_UI()
+    Init_Setting_GUI()
+    Init_Button()
+    Init_mqtt()
+    Init_Thread()

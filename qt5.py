@@ -1,7 +1,7 @@
 from PyQt5           import QtWidgets, uic, QtGui, QtCore
 from PyQt5.QtWidgets import QAction, QTabWidget, QWidget, QMessageBox
 from PyQt5.QtCore    import QTimer, QTime, QThread, Qt, QObject
-from PyQt5.QtGui     import QCloseEvent, QColor
+from PyQt5.QtGui     import QCloseEvent, QColor, QPixmap
 
 import constant  as CONSTANT
 import sys, logging
@@ -440,30 +440,30 @@ class qt5Class(QtCore.QObject):
                 else:
                     pass
             elif (device == 2):
-                if (status == 1):
-                    if(channel == 1):
+                if(channel == 1):
+                    if (status == 0): 
+                        # keo rem - OFF
+                        self.app.tab2_img_2.setPixmap(QtGui.QPixmap(
+                        "photos\\dieu_khien_thiet_bi\\curtain_off.png"))
+                        self.app.tab2_btn_r2on.setStyleSheet(
+                        "QPushButton {background-color:  rgb(229, 229, 229);}")
+                        self.app.tab2_btn_r2off.setStyleSheet(
+                        "QPushButton {background-color: rgb(255, 0, 0);}")    
+                    else:
+                        pass
+                if(channel == 2):
+                    if (status == 1):
+                        # mo rem -ON
                         self.app.tab2_img_2.setPixmap(QtGui.QPixmap(
                             "photos\\dieu_khien_thiet_bi\\curtain_on.png"))
                         self.app.tab2_btn_r2on.setStyleSheet(
                                 "QPushButton {background-color: rgb(0, 170, 0);}")
                         self.app.tab2_btn_r2off.setStyleSheet(
-                                "QPushButton {background-color: rgb(229, 229, 229);}")
-                    elif(channel == 2):
-                        self.app.tab2_img_2.setPixmap(QtGui.QPixmap(
-                            "photos\\dieu_khien_thiet_bi\\curtain_on.png"))
-                        self.app.tab2_btn_r2on.setStyleSheet(
-                                "QPushButton {background-color: rgb(229, 229, 229);}")
-                        self.app.tab2_btn_r2off.setStyleSheet(
-                                "QPushButton {background-color: rgb(0, 170, 0);}")                                
-                elif (status == 0):
-                    self.app.tab2_img_2.setPixmap(QtGui.QPixmap(
-                        "photos\\dieu_khien_thiet_bi\\curtain_off.png"))
-                    self.app.tab2_btn_r2on.setStyleSheet(
-                            "QPushButton {background-color: rgb(229, 229, 229);}")
-                    self.app.tab2_btn_r2off.setStyleSheet(
-                            "QPushButton {background-color: rgb(229, 229, 229);}")
+                                "QPushButton {background-color: rgb(229, 229, 229);}")    
+                    else:
+                        pass
                 else:
-                    pass
+                    pass 
             else:
                 pass
         except:
@@ -479,9 +479,9 @@ class qt5Class(QtCore.QObject):
                 else:
                     pass
             elif(device == 2):
-                if(status == 1):   
+                if(status == 1):   # mo rem
                     self.chang_status_RL(2, 1, channel)
-                elif(status == 0):
+                elif(status == 0): # keo rem
                     self.chang_status_RL(2, 0, channel)
                 else:
                     pass

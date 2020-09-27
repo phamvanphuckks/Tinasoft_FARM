@@ -20,20 +20,20 @@ global DATA_G00, DATA_G01, DATA_G02
 DATA_G00 = {
     "sub_id": "G00",
     "time"  : "",
-    "NODE1":  {"node": 1,"name": "soil_moistrure1", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE2":  {"node": 2,"name": "soil_moistrure2", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE3":  {"node": 3,"name": "soil_moistrure3", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE4":  {"node": 4,"name": "soil_moistrure4", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE5":  {"node": 5,"name": "soil_moistrure5", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE6":  {"node": 6,"name": "soil_moistrure6", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE7":  {"node": 7,"name": "soil_moistrure7", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE8":  {"node": 8,"name": "soil_moistrure8", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE9":  {"node": 9,"name": "soil_moistrure9", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE10": {"node": 10,"name": "soil_moistrure10", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
+    "NODE1":  {"node": 1,"name": "soil_moistrure1", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE2":  {"node": 2,"name": "soil_moistrure2", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE3":  {"node": 3,"name": "soil_moistrure3", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE4":  {"node": 4,"name": "soil_moistrure4", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE5":  {"node": 5,"name": "soil_moistrure5", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE6":  {"node": 6,"name": "soil_moistrure6", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE7":  {"node": 7,"name": "soil_moistrure7", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE8":  {"node": 8,"name": "soil_moistrure8", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE9":  {"node": 9,"name": "soil_moistrure9", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE10": {"node": 10,"name": "soil_moistrure10", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
 
-    "NODE21": {"node": 21,"name": "humidity1",         "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE23": {"node": 23,"name": "light1",            "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE25": {"node": 25,"name": "temperature1",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
+    "NODE21": {"node": 21,"name": "humidity1",         "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE23": {"node": 23,"name": "light1",            "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"},
+    "NODE25": {"node": 25,"name": "temperature1",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"NULL", "time":"", "syn":"error"}
 }
 
 DATA_G01 = {
@@ -48,11 +48,7 @@ DATA_G01 = {
     "NODE17": {"node": 17,"name": "soil_moistrure17", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
     "NODE18": {"node": 18,"name": "soil_moistrure18", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
     "NODE19": {"node": 19,"name": "soil_moistrure19", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE20": {"node": 20,"name": "soil_moistrure20", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-
-    "NODE22": {"node": 22,"name": "humidity2",         "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE24": {"node": 24,"name": "light2",            "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"},
-    "NODE26": {"node": 26,"name": "temperature2",      "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
+    "NODE20": {"node": 20,"name": "soil_moistrure20", "id": 0, "value" : 0, "battery" : 0, "RF_signal":"", "time":"", "syn":"error"}
 }
 
 

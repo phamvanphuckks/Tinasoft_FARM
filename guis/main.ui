@@ -150,7 +150,7 @@ QTabBar::tab:selected {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="usesScrollButtons">
      <bool>true</bool>
@@ -3298,7 +3298,7 @@ border: 2px solid blue</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="tab2_btn_r2off">
+     <widget class="QPushButton" name="tab2_btn_r2on">
       <property name="geometry">
        <rect>
         <x>380</x>
@@ -3326,7 +3326,7 @@ color: rgb(0, 0, 0);</string>
        </size>
       </property>
      </widget>
-     <widget class="QPushButton" name="tab2_btn_r2on">
+     <widget class="QPushButton" name="tab2_btn_r2off">
       <property name="geometry">
        <rect>
         <x>280</x>
