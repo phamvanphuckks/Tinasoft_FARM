@@ -9,6 +9,9 @@ Thread_GUI = QTimer()
 Thread_GW  = QTimer()
 Thread_DB  = QTimer()
 
+global Check_Internet
+Check_Internet = QTimer()
+
 #--------------------------------------------------------------------------------------------------
 
 global DATA_G00, DATA_G01, DATA_G02
@@ -86,16 +89,16 @@ global T, H, SM
 
 L = {
     'min': 2000,
-    'max': 10000
+    'max': 2300
 }
 
 T = {
-    'min': 20,
+    'min': 15,
     'max': 30
 }
 H = {
-    'min': 75,
-    'max': 80
+    'min': 85,
+    'max': 95
 }
 
 SM = {

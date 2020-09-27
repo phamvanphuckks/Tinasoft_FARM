@@ -4,7 +4,7 @@ from PyQt5.QtCore    import QTimer, QTime, QThread, Qt, QObject
 from PyQt5.QtGui     import QCloseEvent, QColor
 
 import constant  as CONSTANT
-import sys, socket, logging
+import sys, logging
 from datetime import datetime
 
 logging.basicConfig(filename='logs\\error_code.log',level=logging.INFO)
@@ -31,10 +31,6 @@ class qt5Class(QtCore.QObject):
         try: 
             for i in range(1, 6):
                 self.UpdatePicture(i, 0)
-            if(self.check_internet()== True):
-                self.display_internet(1)
-            else:
-                self.display_internet(0)
         except:
             logging.info('qt5, initialize : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))    
 
@@ -45,7 +41,6 @@ class qt5Class(QtCore.QObject):
 
             if reply == QMessageBox.Yes:
                 event.accept()
-                # print('Window closed')
             else:
                 event.ignore()
         except:
@@ -65,20 +60,6 @@ class qt5Class(QtCore.QObject):
                         self.app.tab1_l1.setStyleSheet(
                             "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
                     self.app.tab1_l1.setText(str(data_payload['NODE23']['value'] ))
-                else:
-                    pass
-            elif(location == "G01"):
-                if(option == 2):
-                    if (float(data_payload['NODE24']['value'])  <= CONSTANT.L['min']):
-                        self.app.tab1_l2.setStyleSheet(
-                            "QLabel {color:rgb(0, 0, 255);background-color: rgb(255, 255, 255)}")
-                    elif (float(data_payload['NODE24']['value'])  >= CONSTANT.L['max']):
-                        self.app.tab1_l2.setStyleSheet(
-                            "QLabel {color:rgb(255, 0, 0);background-color: rgb(255, 255, 255)}")
-                    else:
-                        self.app.tab1_l2.setStyleSheet(
-                            "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
-                    self.app.tab1_l2.setText(str(data_payload['NODE24']['value'] ))
                 else:
                     pass
             else:
@@ -104,20 +85,6 @@ class qt5Class(QtCore.QObject):
                     self.app.tab1_t1.setText(str(data_payload['NODE25']['value']))
                 else:
                     pass
-            elif(location == "G01"):
-                if (option == 2):
-                    if (float(data_payload['NODE26']['value']) <= CONSTANT.T['min']):
-                        self.app.tab1_t2.setStyleSheet(
-                            "QLabel {color:rgb(0, 0, 255);background-color: rgb(255, 255, 255)}")
-                    elif (float(data_payload['NODE26']['value']) >= CONSTANT.T['max']):
-                        self.app.tab1_t2.setStyleSheet(
-                            "QLabel {color:rgb(255, 0, 0);background-color: rgb(255, 255, 255)}")
-                    else:
-                        self.app.tab1_t2.setStyleSheet(
-                            "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
-                    self.app.tab1_t2.setText(str(data_payload['NODE26']['value']))
-                else:
-                    pass
             else:
                 pass
         except:
@@ -138,20 +105,6 @@ class qt5Class(QtCore.QObject):
                         self.app.tab1_h1.setStyleSheet(
                             "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
                     self.app.tab1_h1.setText(str(data_payload['NODE21']['value']))
-                else:
-                    pass
-            elif(location == "G01"):
-                if(option == 2):
-                    if (float(data_payload['NODE22']['value']) <= CONSTANT.H['min']):
-                        self.app.tab1_h2.setStyleSheet(
-                            "QLabel {color:rgb(0, 0, 255);background-color: rgb(255, 255, 255)}")
-                    elif (float(data_payload['NODE22']['value']) >= CONSTANT.H['max']):
-                        self.app.tab1_h2.setStyleSheet(
-                            "QLabel {color:rgb(255, 0, 0);background-color: rgb(255, 255, 255)}")
-                    else:
-                        self.app.tab1_h2.setStyleSheet(
-                            "QLabel {color:rgb(0, 255, 0);background-color: rgb(255, 255, 255)}")
-                    self.app.tab1_h2.setText(str(data_payload['NODE22']['value']))
                 else:
                     pass
             else:
@@ -454,15 +407,6 @@ class qt5Class(QtCore.QObject):
                 self.app.tab2_th2.setText("NULL")
         except:
             logging.info('qt5, Update_RF_Relay : error ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
-
-    def check_internet(self):
-        try:
-            # connect to the host -- tells us if the host is actually
-            # reachable
-            socket.create_connection(("www.google.com", 80), 2)
-            return True
-        except:
-            return False
 
     def display_internet(self, option):
         try: 

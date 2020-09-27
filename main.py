@@ -17,7 +17,7 @@ import db_handler   as  SQLite
 from gateway    import Gateway
 from qt5        import qt5Class
 
-import logging, threading
+import logging
 
 # define globale
 Windowns = qt5Class()
@@ -431,15 +431,6 @@ def Thread_GatewayBlue():
     except:
         logging.info('Thread_GatewayBlue error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))   
 
-def Thread_GatewayBlue_QT():
-    try:
-        Thread_GW  = threading.Thread(target=Thread_GatewayBlue, args=())
-        Thread_GW.setDaemon(True)
-
-        Thread_GW.start()
-    except:
-        logging.info('Thread_GatewayBlue_QT error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
-
 def Thread_UpdateGUI_QT():
     global Windowns
     try:
@@ -463,39 +454,29 @@ def Thread_UpdateGUI_QT():
     except:
         logging.info('Thread_UpdateGUI_QT error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
   
-
-class YouThread(QtCore.QThread): # inheritance
-    global client
-
-    def __init__(self, parent=None):
-        QtCore.QThread.__init__(self, parent)
-
-    def run(self): 
-        while(True):
-            try: 
-                if(check_internet() == False): # khi mat mang se backup
-                    time.sleep(1) # delay 1 day - loai bo truong hop mang khong on dinh
-                    if(check_internet() == False):
-                        Windowns.display_internet(0)
-                else:   
-                        Windowns.display_internet(1)
-            except:
-                logging.info('YouThread error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
-            time.sleep(1) # delay 1 day 
-
-thread = YouThread() 
-thread.start()
+def Thread_UpdateInternet():
+    try: 
+        if(check_internet() == False): # khi mat mang se backup
+            time.sleep(1) # delay 1 day - loai bo truong hop mang khong on dinh
+            if(check_internet() == False):
+                Windowns.display_internet(0)
+        else:   
+                Windowns.display_internet(1)
+    except:
+        logging.info('YouThread error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))  
 
 def Init_Thread():
     try:
         #---data---------------------------------------------------------------------------------------------
-        CONSTANT.Thread_GW.timeout.connect(Thread_GatewayBlue_QT)
+        CONSTANT.Thread_GW.timeout.connect(Thread_GatewayBlue)
         CONSTANT.Thread_GW.start(120000)
 
         # muốn đồng bộ nhanh - 2  thread  phải lệch khe thời gian
         CONSTANT.Thread_GUI.timeout.connect(Thread_UpdateGUI_QT)
         CONSTANT.Thread_GUI.start(125000)
 
+        CONSTANT.Check_Internet.timeout.connect(Thread_UpdateInternet)
+        CONSTANT.Check_Internet.start(1000)
  
         #-----------------------------------------------------------------------------------------------------   
     except:
@@ -581,14 +562,14 @@ def Init_api():
 
 if __name__ == "__main__": 
 
-    Init_api()
-    requirePort()
-    Init_UI()
+    # Init_api()
+    # requirePort()
+    # Init_UI()
     Init_Button()
     Init_mqtt()
     Init_Thread()
-    Thread_GatewayBlue()
-    Thread_UpdateGUI_QT() 
+    # Thread_GatewayBlue()
+    # Thread_UpdateGUI_QT() 
 
 
     Windowns.app.show()
