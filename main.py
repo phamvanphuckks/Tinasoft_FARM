@@ -89,14 +89,14 @@ def ControlDevice(device, status): # kiêu kiểu thế này
                 GW_Blue.control_RL(24, 2, 1)
                 if(get_status(28, 2) == "1"):
                     Windowns.UpdatePicture(device, status, 2)# thay đổi trên app  -------- status = 0
-                time.sleep(1.5)
+                time.sleep(3)
                 GW_Blue.control_RL(24, 2, 0) 
-            elif(status == 0): # relay2-channel1 - keo rem
+            elif(status == 0): # relay2-channel1 - 
                 CONSTANT.flag_curtain = 0
                 GW_Blue.control_RL(24, 1, 1) 
                 if(get_status(28, 1) == "1"):
                     Windowns.UpdatePicture(device, status, 1) # thay đổi trên app --------  status = 1 
-                time.sleep(1.5)
+                time.sleep(3)
                 GW_Blue.control_RL(24, 1, 0)  
             else:
                 pass
@@ -284,6 +284,17 @@ def on_message(client, userdata, msg):  # received data - chua code xong
     except:
         logging.info('Loi on_message : ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))          
 
+def Automatic():
+    if((Windowns.get_password()=="123")):
+        CONSTANT.en_Relay = not(CONSTANT.en_Relay)
+        if( CONSTANT.en_Relay== True):
+            Windowns.app.btn_auto.setStyleSheet("QPushButton {background-color: rgb(0, 170, 0);}")
+        else:
+            Windowns.app.btn_auto.setStyleSheet("QPushButton {background-color: rgb(229, 229, 229);}")            
+    else:
+        QMessageBox.information(Windowns.app,"Error","Password Wrong?")
+        Windowns.app.btn_auto.setStyleSheet("QPushButton {background-color: rgb(229, 229, 229);}")
+
 def Init_Button():
     try:
         Windowns.app.tab2_btn_r1off.clicked.connect(lambda:ControlDevice(1, 0))
@@ -293,6 +304,7 @@ def Init_Button():
         Windowns.app.tab2_btn_r2off.clicked.connect(lambda:ControlDevice(2, 0))
         Windowns.app.tab2_btn_r2on.clicked.connect(lambda:ControlDevice(2, 1))
 
+        Windowns.app.btn_auto.clicked.connect(Automatic)
     except:
         logging.info('Init_Button Error: ' + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))   
 
@@ -394,49 +406,53 @@ def Thread_GatewayBlue():
         # update RF_signal relay
         CONSTANT.DATA_RELAY["NODE" + str(27)]["RF_signal"] = GW_Blue.get_RFsignal(23, CONSTANT.SENSOR["relay"])
         CONSTANT.DATA_RELAY["NODE" + str(28)]["RF_signal"] = GW_Blue.get_RFsignal(24, CONSTANT.SENSOR["relay"])
-
-        # auto pump
-        if(((float(CONSTANT.DATA_G00["NODE1"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE1"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE2"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE2"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE3"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE3"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE4"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE4"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE5"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE5"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE6"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE6"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE7"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE7"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE8"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE8"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE9"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE9"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G00["NODE10"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE10"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE11"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE11"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE12"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE12"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE13"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE13"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE14"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE14"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE15"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE15"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE16"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE16"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE17"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE17"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE18"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE18"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE19"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE19"]["RF_signal"] != "NULL")) or 
-        ((float(CONSTANT.DATA_G01["NODE20"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE20"]["RF_signal"] != "NULL"))):
-            # ON
-            if(CONSTANT.flag_pump < 1):
-                ControlDevice(1, 1)
-                CONSTANT.flag_pump += 1
+        print(CONSTANT.en_Relay)
+        if(CONSTANT.en_Relay == True):
+            # auto pump
+            if(((float(CONSTANT.DATA_G00["NODE1"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE1"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE2"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE2"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE3"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE3"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE4"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE4"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE5"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE5"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE6"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE6"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE7"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE7"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE8"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE8"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE9"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE9"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G00["NODE10"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G00["NODE10"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE11"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE11"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE12"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE12"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE13"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE13"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE14"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE14"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE15"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE15"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE16"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE16"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE17"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE17"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE18"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE18"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE19"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE19"]["RF_signal"] != "NULL")) or 
+            ((float(CONSTANT.DATA_G01["NODE20"]["value"]) <= float(CONSTANT.SM["min"])) and (CONSTANT.DATA_G01["NODE20"]["RF_signal"] != "NULL"))):
+                # ON 
+                if(CONSTANT.flag_pump < 1):
+                    ControlDevice(1, 1)
+                    CONSTANT.flag_pump += 1
+            else:
+                # OFF
+                if(CONSTANT.flag_pump >= 1):
+                    ControlDevice(1, 0)
+                    CONSTANT.flag_pump = 0
+            # auto curtains
+            if((float(CONSTANT.DATA_G00["NODE23"]["value"]) >= float(CONSTANT.L["max"])) and (CONSTANT.DATA_G00["NODE23"]["RF_signal"] != "NULL")): # keo rem close
+                # mo rem - ON
+                if(CONSTANT.flag_curtain < 1):
+                    ControlDevice(2, 1)
+                    print("mo rem")
+                    CONSTANT.flag_curtain += 1
+            else: 
+                # keo rem - OFF
+                if(CONSTANT.flag_curtain >= 1):
+                    ControlDevice(2, 0)
+                    print("Keo rem")
+                    CONSTANT.flag_curtain = 0
         else:
-            # OFF
-            if(CONSTANT.flag_pump >= 1):
-                ControlDevice(1, 0)
-                CONSTANT.flag_pump = 0
-
-        # auto curtains
-        if((float(CONSTANT.DATA_G00["NODE23"]["value"]) >= float(CONSTANT.L["max"])) and (CONSTANT.DATA_G00["NODE23"]["RF_signal"] != "NULL")): # keo rem close
-            # mo rem - ON
-            if(CONSTANT.flag_curtain < 1):
-                ControlDevice(2, 1)
-                CONSTANT.flag_curtain += 1
-        else: 
-            # keo rem - OFF
-            if(CONSTANT.flag_curtain >= 1):
-                ControlDevice(2, 0)
-                CONSTANT.flag_curtain = 0
+            pass
 
         #send message to server and insert database
         if(check_internet() == True): 
@@ -501,12 +517,12 @@ def Init_Thread():
     try:
         #---data---------------------------------------------------------------------------------------------
         CONSTANT.Thread_GW.timeout.connect(Thread_GatewayBlue_QT)
-        # CONSTANT.Thread_GW.start(120000)
-        CONSTANT.Thread_GW.start(30000)
+        CONSTANT.Thread_GW.start(120000)
+        #CONSTANT.Thread_GW.start(30000)
         # muốn đồng bộ nhanh - 2  thread  phải lệch khe thời gian
         CONSTANT.Thread_GUI.timeout.connect(Thread_UpdateGUI_QT)
-        # CONSTANT.Thread_GUI.start(125000)
-        CONSTANT.Thread_GUI.start(32000)
+        CONSTANT.Thread_GUI.start(125000)
+        #CONSTANT.Thread_GUI.start(32000)
 
         CONSTANT.Check_Internet.timeout.connect(Thread_UpdateInternet)
         CONSTANT.Check_Internet.start(1000)
