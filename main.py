@@ -89,15 +89,27 @@ def ControlDevice(device, status): # kiêu kiểu thế này
                 GW_Blue.control_RL(24, 2, 1)
                 if(get_status(28, 2) == "1"):
                     Windowns.UpdatePicture(device, status, 2)# thay đổi trên app  -------- status = 0
-                time.sleep(3)
+                time.sleep(1.5)
+                GW_Blue.control_RL(24, 2, 0)
                 GW_Blue.control_RL(24, 2, 0) 
+                GW_Blue.control_RL(24, 2, 0)
+                time.sleep(0.1)
+                GW_Blue.control_RL(24, 2, 0) 
+                GW_Blue.control_RL(24, 2, 0) 
+                GW_Blue.control_RL(24, 2, 0)
             elif(status == 0): # relay2-channel1 - 
                 CONSTANT.flag_curtain = 0
                 GW_Blue.control_RL(24, 1, 1) 
                 if(get_status(28, 1) == "1"):
                     Windowns.UpdatePicture(device, status, 1) # thay đổi trên app --------  status = 1 
-                time.sleep(3)
+                time.sleep(1.5)
                 GW_Blue.control_RL(24, 1, 0)  
+                GW_Blue.control_RL(24, 1, 0)
+                GW_Blue.control_RL(24, 1, 0)
+                time.sleep(0.1)
+                GW_Blue.control_RL(24, 1, 0)
+                GW_Blue.control_RL(24, 1, 0)
+                GW_Blue.control_RL(24, 1, 0)
             else:
                 pass
         else:
